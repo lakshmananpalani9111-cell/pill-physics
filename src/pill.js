@@ -1,5 +1,34 @@
 import * as THREE from "three"
 
+// Create canvas texture with "DOPAMINE" text
+function createTextTexture() {
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 256
+  const ctx = canvas.getContext('2d')
+  
+  // Cream background (matching material color)
+  ctx.fillStyle = '#f0ebe0'
+  ctx.fillRect(0, 0, 512, 256)
+  
+  // Text styling - pharmaceutical style font (bold, condensed)
+  ctx.fillStyle = '#2a2a2a'
+  ctx.font = 'bold 52px "Arial Narrow", Arial, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.letterSpacing = '2px'
+  
+  // Draw "DOPAMINE" text
+  ctx.fillText('DOPAMINE', 256, 128)
+  
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.wrapS = THREE.RepeatWrapping
+  texture.wrapT = THREE.ClampToEdgeWrapping
+  return texture
+}
+
+const textTexture = createTextTexture()
+
 export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
   const group = new THREE.Group()
 
@@ -12,10 +41,19 @@ export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
     metalness: 0.0,
   })
 
+  // Bottom material (cream) - plain for hemisphere
   const bottomMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf5f0e8,
+    color: 0xf0ebe0,
     roughness: 0.8,
     metalness: 0.0,
+  })
+
+  // Bottom material with text for cylinder only
+  const bottomMaterialWithText = new THREE.MeshStandardMaterial({
+    color: 0xffffff,  // White to show texture colors accurately
+    roughness: 0.8,
+    metalness: 0.0,
+    map: textTexture,
   })
 
   // Hemispheres: their cut edge (equator) is at local y=0
@@ -55,7 +93,7 @@ export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
     group.add(topCyl)
 
     const botCylGeo = new THREE.CylinderGeometry(radius, radius, halfCylH, segments)
-    const botCyl = new THREE.Mesh(botCylGeo, bottomMaterial)
+    const botCyl = new THREE.Mesh(botCylGeo, bottomMaterialWithText)
     botCyl.position.y = -halfCylH / 2           // = -cylinderHeight/4
     group.add(botCyl)
   }
