@@ -7,13 +7,13 @@ export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
 
   // Materials - high contrast (darker darks, brighter lights)
   const topMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0a0a0a,     // Darker for contrast: significantly up
+    color: 0x0a0a0a,
     roughness: 0.5,
     metalness: 0.0,
   })
 
   const bottomMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf5f0e8,     // Brighter cream for highlights: significantly up
+    color: 0xf5f0e8,
     roughness: 0.8,
     metalness: 0.0,
   })

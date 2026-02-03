@@ -103,33 +103,27 @@ function createVisibleWall(x, y, z, width, height, depth, color) {
 {
   const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0, -visibleHeight / 2 - wallThickness / 2, 0))
   world.createCollider(
-    RAPIER.ColliderDesc.cuboid(visibleWidth / 2 + wallThickness, wallThickness / 2, containerDepth / 2 + wallThickness)
-      .setTranslation(0, wallThickness / 2, 0),
+    RAPIER.ColliderDesc.cuboid(visibleWidth / 2 + wallThickness, wallThickness / 2, containerDepth / 2 + wallThickness),
     body
   )
-  // Visual debug walls removed - walls are invisible but still functional
 }
 
 // Left barrier - inner surface at visible left edge
 {
   const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(-visibleWidth / 2 - wallThickness / 2, 0, 0))
   world.createCollider(
-    RAPIER.ColliderDesc.cuboid(wallThickness / 2, visibleHeight / 2, containerDepth / 2)
-      .setTranslation(wallThickness / 2, 0, 0),
+    RAPIER.ColliderDesc.cuboid(wallThickness / 2, visibleHeight / 2, containerDepth / 2),
     body
   )
-  // Visual debug walls removed - walls are invisible but still functional
 }
 
 // Right barrier - inner surface at visible right edge
 {
   const body = world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(visibleWidth / 2 + wallThickness / 2, 0, 0))
   world.createCollider(
-    RAPIER.ColliderDesc.cuboid(wallThickness / 2, visibleHeight / 2, containerDepth / 2)
-      .setTranslation(-wallThickness / 2, 0, 0),
+    RAPIER.ColliderDesc.cuboid(wallThickness / 2, visibleHeight / 2, containerDepth / 2),
     body
   )
-  // Visual debug walls removed - walls are invisible but still functional
 }
 
 // Front barrier (glass pane - extends INTO container to create buffer zone)
