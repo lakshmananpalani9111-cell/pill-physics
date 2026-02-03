@@ -7,12 +7,12 @@ function createTextTexture() {
   canvas.height = 256
   const ctx = canvas.getContext('2d')
   
-  // Cream background (matching material color)
-  ctx.fillStyle = '#f0ebe0'
+  // Warm ivory background (matching material color)
+  ctx.fillStyle = '#f5e6c8'
   ctx.fillRect(0, 0, 512, 256)
   
   // Text styling - pharmaceutical style font (bold, condensed)
-  ctx.fillStyle = '#2a2a2a'
+  ctx.fillStyle = '#3a3632'  // Warm charcoal to match pill top
   ctx.font = 'bold 52px "Arial Narrow", Arial, sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
@@ -22,6 +22,7 @@ function createTextTexture() {
   ctx.fillText('DOPAMINE', 256, 128)
   
   const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace  // Match material color space
   texture.wrapS = THREE.RepeatWrapping
   texture.wrapT = THREE.ClampToEdgeWrapping
   return texture
@@ -34,16 +35,16 @@ export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
 
   const cylinderHeight = Math.max(0, height - 2 * radius)
 
-  // Materials - high contrast (darker darks, brighter lights)
+  // Materials - warm charcoal top, warm ivory bottom
   const topMaterial = new THREE.MeshStandardMaterial({
-    color: 0x0a0a0a,
+    color: 0x3a3632,  // Warm charcoal
     roughness: 0.5,
     metalness: 0.0,
   })
 
-  // Bottom material (cream) - plain for hemisphere
+  // Bottom material (warm ivory) - plain for hemisphere
   const bottomMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf0ebe0,
+    color: 0xf5e6c8,  // Warm ivory
     roughness: 0.8,
     metalness: 0.0,
   })
