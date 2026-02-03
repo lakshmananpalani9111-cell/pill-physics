@@ -46,30 +46,30 @@ const camera = new THREE.OrthographicCamera(
 camera.position.set(0, 0, 10)
 camera.lookAt(0, 0, 0)
 
-// Lights - high contrast with green bounce from mat
-scene.add(new THREE.AmbientLight(0xffffff, 0.7))  // Neutral ambient
+// Lights - high contrast with strong green bounce from mat
+scene.add(new THREE.AmbientLight(0xffffff, 0.6))  // Reduced to let green show
 
-// Main light from above - strong for highlights
-const dir = new THREE.DirectionalLight(0xffffff, 1.0)
+// Main light from above
+const dir = new THREE.DirectionalLight(0xffffff, 0.9)
 dir.position.set(0, 10, 5)
 scene.add(dir)
 
-// Green bounce light from below (simulating green mat reflection)
-const greenBounce = new THREE.DirectionalLight(0x4a7c59, 0.4)
-greenBounce.position.set(0, -5, 3)
+// Strong green bounce light from below (mat color #66AD80)
+const greenBounce = new THREE.DirectionalLight(0x66AD80, 0.8)
+greenBounce.position.set(0, -3, 4)
 scene.add(greenBounce)
 
-// Green fill from the sides
-const greenFillLeft = new THREE.PointLight(0x5a8a69, 0.3, 20)
-greenFillLeft.position.set(-8, -2, 2)
+// Green fills (slightly lighter for wrap effect)
+const greenFillLeft = new THREE.PointLight(0x7ABD90, 0.6, 30)
+greenFillLeft.position.set(-6, -1, 3)
 scene.add(greenFillLeft)
 
-const greenFillRight = new THREE.PointLight(0x5a8a69, 0.3, 20)
-greenFillRight.position.set(8, -2, 2)
+const greenFillRight = new THREE.PointLight(0x7ABD90, 0.6, 30)
+greenFillRight.position.set(6, -1, 3)
 scene.add(greenFillRight)
 
-// Hemisphere light with green ground color
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x4a7c59, 0.35)
+// Hemisphere light with mat color as ground
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x66AD80, 0.5)
 scene.add(hemiLight)
 
 // Physics
