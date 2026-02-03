@@ -40,11 +40,22 @@ const camera = new THREE.OrthographicCamera(
 camera.position.set(0, 0, 10)
 camera.lookAt(0, 0, 0)
 
-// Lights
-scene.add(new THREE.AmbientLight(0xffffff, 0.8))
-const dir = new THREE.DirectionalLight(0xffffff, 0.6)
-dir.position.set(5, 8, 5)
+// Lights - match the soft, warm overhead lighting of the scene
+scene.add(new THREE.AmbientLight(0xf5f0e6, 0.6))  // Warm ambient, reduced intensity
+
+// Main light from above (matching the scene's overhead lighting)
+const dir = new THREE.DirectionalLight(0xfff5e6, 0.5)  // Warm white
+dir.position.set(0, 10, 2)  // More directly overhead
 scene.add(dir)
+
+// Soft fill light from below to reduce harsh shadows
+const fillLight = new THREE.DirectionalLight(0x90a090, 0.2)  // Slight green tint
+fillLight.position.set(0, -5, 5)
+scene.add(fillLight)
+
+// Hemisphere light for natural sky/ground gradient
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x80a080, 0.3)  // White sky, greenish ground
+scene.add(hemiLight)
 
 // Physics
 await RAPIER.init()

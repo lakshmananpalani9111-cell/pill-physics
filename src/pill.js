@@ -5,17 +5,17 @@ export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
 
   const cylinderHeight = Math.max(0, height - 2 * radius)
 
-  // Materials
+  // Materials - less contrast, warmer tones to match scene
   const topMaterial = new THREE.MeshStandardMaterial({
-    color: 0x000000,
-    roughness: 0.1,
-    metalness: 0.3,
+    color: 0x1a1a1a,     // Dark gray instead of pure black
+    roughness: 0.4,      // Less glossy
+    metalness: 0.1,      // Less metallic
   })
 
   const bottomMaterial = new THREE.MeshStandardMaterial({
-    color: 0xf5f5dc,
-    roughness: 0.9,
-    metalness: 0.05,
+    color: 0xe8e4d4,     // Warmer cream to match scene
+    roughness: 0.85,     // Slightly less rough
+    metalness: 0.02,     // Minimal metalness
   })
 
   // Hemispheres: their cut edge (equator) is at local y=0
