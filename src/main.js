@@ -46,21 +46,30 @@ const camera = new THREE.OrthographicCamera(
 camera.position.set(0, 0, 10)
 camera.lookAt(0, 0, 0)
 
-// Lights - high contrast with lifted shadows
-scene.add(new THREE.AmbientLight(0xffffff, 0.7))  // Shadows: slightly lifted
+// Lights - high contrast with green bounce from mat
+scene.add(new THREE.AmbientLight(0xffffff, 0.7))  // Neutral ambient
 
 // Main light from above - strong for highlights
-const dir = new THREE.DirectionalLight(0xffffff, 1.0)  // Highlights: significantly up
+const dir = new THREE.DirectionalLight(0xffffff, 1.0)
 dir.position.set(0, 10, 5)
 scene.add(dir)
 
-// Fill light for lifted shadows
-const fillLight = new THREE.DirectionalLight(0xffffff, 0.3)
-fillLight.position.set(0, -5, 5)
-scene.add(fillLight)
+// Green bounce light from below (simulating green mat reflection)
+const greenBounce = new THREE.DirectionalLight(0x4a7c59, 0.4)
+greenBounce.position.set(0, -5, 3)
+scene.add(greenBounce)
 
-// Hemisphere light for even fill
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4)
+// Green fill from the sides
+const greenFillLeft = new THREE.PointLight(0x5a8a69, 0.3, 20)
+greenFillLeft.position.set(-8, -2, 2)
+scene.add(greenFillLeft)
+
+const greenFillRight = new THREE.PointLight(0x5a8a69, 0.3, 20)
+greenFillRight.position.set(8, -2, 2)
+scene.add(greenFillRight)
+
+// Hemisphere light with green ground color
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x4a7c59, 0.35)
 scene.add(hemiLight)
 
 // Physics
