@@ -259,6 +259,58 @@ for (let i = 0; i < 60; i++) {
   spawnBrick(i, 'right')
 }
 
+// Mouse interaction - repulsion force
+const mouse = new THREE.Vector2()
+const mouseWorld = new THREE.Vector3()
+let mouseInside = false
+
+// Track mouse position
+window.addEventListener('mousemove', (event) => {
+  // Convert to normalized device coordinates (-1 to +1)
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
+  mouseInside = true
+  
+  // Convert to world coordinates for orthographic camera
+  mouseWorld.x = (mouse.x * viewSize * aspect) / 2
+  mouseWorld.y = (mouse.y * viewSize) / 2
+  mouseWorld.z = 0
+})
+
+window.addEventListener('mouseleave', () => {
+  mouseInside = false
+})
+
+// Repulsion settings
+const repulsionRadius = 1      // How far the repulsion reaches
+const repulsionStrength = 5    // How strong the push is
+
+function applyMouseRepulsion() {
+  if (!mouseInside) return
+  
+  for (const b of bricks) {
+    const pos = b.rb.translation()
+    
+    // Calculate distance from mouse to pill (in XY plane)
+    const dx = pos.x - mouseWorld.x
+    const dy = pos.y - mouseWorld.y
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    
+    // Apply force if within repulsion radius
+    if (distance < repulsionRadius && distance > 0.01) {
+      // Force gets stronger as you get closer (inverse relationship)
+      const forceMagnitude = repulsionStrength * (1 - distance / repulsionRadius)
+      
+      // Normalize direction and apply force
+      const forceX = (dx / distance) * forceMagnitude
+      const forceY = (dy / distance) * forceMagnitude
+      
+      // Apply impulse to push pill away
+      b.rb.applyImpulse({ x: forceX * 0.016, y: forceY * 0.016, z: 0 }, true)
+    }
+  }
+}
+
 // Animation
 let frameCount = 0
 let bricksSettled = false // Track if bricks have settled
@@ -267,6 +319,9 @@ function animate() {
   requestAnimationFrame(animate)
   world.step()
   frameCount++
+  
+  // Apply mouse repulsion force
+  applyMouseRepulsion()
 
   for (let i = 0; i < bricks.length; i++) {
     const b = bricks[i]
