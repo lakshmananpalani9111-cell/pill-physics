@@ -1,5 +1,6 @@
 import * as THREE from "three"
 import RAPIER from "@dimforge/rapier3d-compat"
+import { createPillMesh } from "./pill.js"
 
 // Clear the app
 const app = document.querySelector("#app")
@@ -8,19 +9,22 @@ if (app) {
   app.style.position = "fixed"
   app.style.inset = "0"
   app.style.overflow = "hidden"
-  app.style.background = "#000000"
+  app.style.background = "transparent"
 }
 document.body.style.margin = "0"
 
 // Renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true })
+const renderer = new THREE.WebGLRenderer({ 
+  antialias: true,
+  alpha: true
+})
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 app?.appendChild(renderer.domElement)
 
 // Scene
 const scene = new THREE.Scene()
-scene.background = new THREE.Color("#000000")
+scene.background = null
 
 // Camera - orthographic for flat, parallel view (like 2D but with depth)
 const viewSize = 10
@@ -44,7 +48,7 @@ scene.add(dir)
 
 // Physics
 await RAPIER.init()
-const world = new RAPIER.World({ x: 0, y: -6, z: 0 })
+const world = new RAPIER.World({ x: 0, y: -4, z: 0 })
 
 // Calculate visible bounds for orthographic camera
 const visibleHeight = viewSize
@@ -52,7 +56,7 @@ const visibleWidth = viewSize * aspect
 
 // Simple container: bottom + sides + front/back (no visual floor)
 const wallThickness = 0.5 // Increased thickness to prevent tunneling
-const containerDepth = 2 // Limit Z depth so objects can't fall behind
+const containerDepth = 0.7 // Limit Z depth so objects can't fall behind (0.5 unit playable depth)
 
 // Helper function to create visible walls for debugging
 function createVisibleWall(x, y, z, width, height, depth, color) {
@@ -132,13 +136,11 @@ function createVisibleWall(x, y, z, width, height, depth, color) {
   // Visual debug walls removed - walls are invisible but still functional
 }
 
-// Bricks
-const brickW = 0.8 * 1.25 * 1.5 // 1.5
-const brickH = 0.25 * 1.25 * 1.5 // 0.46875
-const brickD = 0.4 * 1.25 * 1.5 // 0.75
-const brickGeo = new THREE.BoxGeometry(brickW, brickH, brickD)
-const colors = ["#0B66FF", "#5B49FF", "#FF3B30", "#FFC400", "#BDE8E1", "#F6C1DA"]
-const bricks = []
+// Pills
+const pillRadius = 0.15 // Radius of the pill
+const pillHeight = 0.74 // Total height of the pill
+const segments = 32 // Smoothness of the pill
+const bricks = [] // Keep name as 'bricks' for compatibility with existing code
 
 // Debug: Log container info
 console.log('=== Container Debug Info ===')
@@ -146,8 +148,8 @@ console.log('Container depth:', containerDepth)
 console.log('Back wall at z:', -containerDepth / 2)
 console.log('Front wall at z:', containerDepth / 2)
 console.log('Z bounds: from', -containerDepth / 2, 'to', containerDepth / 2)
-console.log('Brick depth:', brickD)
-console.log('Brick Z half-extent:', brickD / 2)
+console.log('Pill radius:', pillRadius)
+console.log('Pill height:', pillHeight)
 
 // Debug: Log actual wall collider positions (matching the actual wall code)
 console.log('=== Wall Collider Positions ===')
@@ -177,7 +179,7 @@ console.log('Back wall collider extends from z:', backWallColliderCenterZ - wall
 console.log('=== Brick Spawn Range ===')
 console.log('Brick X spawn: Left side (near -visibleWidth/2)')
 console.log('Brick Y spawn: Top (visibleHeight/2 + 0.5)')
-console.log('Brick Z spawn: Slightly back from center (z = -0.2)')
+console.log('Pill Z spawn: Center (z = 0)')
 
 function spawnBrick(index, side = 'left') {
   // Spawn on left or right side of the screen
@@ -199,7 +201,7 @@ function spawnBrick(index, side = 'left') {
   const yOffset = index * ySpacing
   const y = visibleHeight / 2 + 0.5 + yOffset // All spawn near top, slightly spaced
   
-  const z = -0.2 // Spawn slightly back from center to prevent forward drift
+  const z = 0 // Spawn at center
 
   // Debug: Log spawn position for each brick
   if (index < 3 || index >= 20) {
@@ -210,33 +212,30 @@ function spawnBrick(index, side = 'left') {
     RAPIER.RigidBodyDesc.dynamic()
       .setTranslation(x, y, z)
       .setLinearDamping(0.5)
-      .setAngularDamping(0.98) // Increased from 0.8 to reduce rotations and collisions
+      .setAngularDamping(0.98)
+      .enabledRotations(false, true, true) // Lock X-axis rotation to prevent forward/backward tilt
   )
-  // Rely on walls to contain bricks - no Z lock needed
+  // X-axis rotation locked to prevent pills from tilting into Z-axis and getting stuck
 
+  // Create capsule collider for pill shape
   world.createCollider(
-    RAPIER.ColliderDesc.cuboid(brickW / 2, brickH / 2, brickD / 2)
+    RAPIER.ColliderDesc.capsule((pillHeight - 2 * pillRadius) / 2, pillRadius)
       .setFriction(1.0)
       .setRestitution(0.1),
     rb
   )
 
-  const mesh = new THREE.Mesh(
-    brickGeo,
-    new THREE.MeshStandardMaterial({ 
-      color: colors[Math.floor(Math.random() * colors.length)], 
-      roughness: 0.7 
-    })
-  )
-  scene.add(mesh)
-  bricks.push({ rb, mesh })
+  // Create pill mesh (black top, cream bottom)
+  const pillMesh = createPillMesh(pillRadius, pillHeight, segments)
+  scene.add(pillMesh)
+  bricks.push({ rb, mesh: pillMesh })
 }
 
-// Spawn 30 bricks on the left and 30 on the right
-for (let i = 0; i < 30; i++) {
+// Spawn 60 pills on the left and 60 on the right (120 total)
+for (let i = 0; i < 60; i++) {
   spawnBrick(i, 'left')
 }
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 60; i++) {
   spawnBrick(i, 'right')
 }
 
@@ -256,7 +255,7 @@ function animate() {
     
     // Force Z to stay at spawn position to prevent forward/backward drift
     // Disable Z resets once bricks have settled to prevent movement during resize
-    const targetZ = -0.2
+    const targetZ = 0
     const needsZReset = !bricksSettled && Math.abs(t.z - targetZ) > 0.01
     if (needsZReset) {
       b.rb.setTranslation({ x: t.x, y: t.y, z: targetZ }, false) // Don't wake up - let bricks sleep when settled
