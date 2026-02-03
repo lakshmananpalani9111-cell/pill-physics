@@ -20,6 +20,12 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+// Tone mapping for exposure and contrast
+renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMappingExposure = 1.3  // Exposure: slightly up
+renderer.outputColorSpace = THREE.SRGBColorSpace
+
 app?.appendChild(renderer.domElement)
 
 // Scene
@@ -40,21 +46,21 @@ const camera = new THREE.OrthographicCamera(
 camera.position.set(0, 0, 10)
 camera.lookAt(0, 0, 0)
 
-// Lights - match the soft, warm overhead lighting of the scene
-scene.add(new THREE.AmbientLight(0xf5f0e6, 0.6))  // Warm ambient, reduced intensity
+// Lights - high contrast with lifted shadows
+scene.add(new THREE.AmbientLight(0xffffff, 0.7))  // Shadows: slightly lifted
 
-// Main light from above (matching the scene's overhead lighting)
-const dir = new THREE.DirectionalLight(0xfff5e6, 0.5)  // Warm white
-dir.position.set(0, 10, 2)  // More directly overhead
+// Main light from above - strong for highlights
+const dir = new THREE.DirectionalLight(0xffffff, 1.0)  // Highlights: significantly up
+dir.position.set(0, 10, 5)
 scene.add(dir)
 
-// Soft fill light from below to reduce harsh shadows
-const fillLight = new THREE.DirectionalLight(0x90a090, 0.2)  // Slight green tint
+// Fill light for lifted shadows
+const fillLight = new THREE.DirectionalLight(0xffffff, 0.3)
 fillLight.position.set(0, -5, 5)
 scene.add(fillLight)
 
-// Hemisphere light for natural sky/ground gradient
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x80a080, 0.3)  // White sky, greenish ground
+// Hemisphere light for even fill
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4)
 scene.add(hemiLight)
 
 // Physics
