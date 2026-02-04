@@ -82,7 +82,7 @@ const visibleWidth = viewSize * aspect
 
 // Simple container: bottom + sides + front/back (no visual floor)
 const wallThickness = 0.5 // Increased thickness to prevent tunneling
-const containerDepth = 0.7 // Limit Z depth so objects can't fall behind (0.5 unit playable depth)
+const containerDepth = 0.84 // Increased 20% - Limit Z depth so objects can't fall behind
 
 // Helper function to create visible walls for debugging
 function createVisibleWall(x, y, z, width, height, depth, color) {
@@ -157,8 +157,8 @@ function createVisibleWall(x, y, z, width, height, depth, color) {
 }
 
 // Pills
-const pillRadius = 0.15 // Radius of the pill
-const pillHeight = 0.74 // Total height of the pill
+const pillRadius = 0.18 // Radius of the pill (increased 20%)
+const pillHeight = 0.888 // Total height of the pill (increased 20%)
 const segments = 32 // Smoothness of the pill
 const bricks = [] // Keep name as 'bricks' for compatibility with existing code
 
@@ -251,11 +251,11 @@ function spawnBrick(index, side = 'left') {
   bricks.push({ rb, mesh: pillMesh })
 }
 
-// Spawn 60 pills on the left and 60 on the right (120 total)
-for (let i = 0; i < 60; i++) {
+// Spawn 30 pills on the left and 30 on the right (60 total)
+for (let i = 0; i < 30; i++) {
   spawnBrick(i, 'left')
 }
-for (let i = 0; i < 60; i++) {
+for (let i = 0; i < 30; i++) {
   spawnBrick(i, 'right')
 }
 
