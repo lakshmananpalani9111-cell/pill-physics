@@ -54,22 +54,22 @@ const dir = new THREE.DirectionalLight(0xffffff, 0.9)
 dir.position.set(0, 10, 5)
 scene.add(dir)
 
-// Strong green bounce light from below (mat color #66AD80)
-const greenBounce = new THREE.DirectionalLight(0x66AD80, 0.8)
+// Strong green bounce light from below (mat color #41663F)
+const greenBounce = new THREE.DirectionalLight(0x41663F, 0.6)
 greenBounce.position.set(0, -3, 4)
 scene.add(greenBounce)
 
 // Green fills (slightly lighter for wrap effect)
-const greenFillLeft = new THREE.PointLight(0x7ABD90, 0.6, 30)
+const greenFillLeft = new THREE.PointLight(0x4A7548, 0.4, 30)
 greenFillLeft.position.set(-6, -1, 3)
 scene.add(greenFillLeft)
 
-const greenFillRight = new THREE.PointLight(0x7ABD90, 0.6, 30)
+const greenFillRight = new THREE.PointLight(0x4A7548, 0.4, 30)
 greenFillRight.position.set(6, -1, 3)
 scene.add(greenFillRight)
 
 // Hemisphere light with mat color as ground
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x66AD80, 0.5)
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x41663F, 0.3)
 scene.add(hemiLight)
 
 // Physics
