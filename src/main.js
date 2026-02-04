@@ -23,7 +23,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Tone mapping for exposure and contrast
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-renderer.toneMappingExposure = 1.3  // Exposure: slightly up
+renderer.toneMappingExposure = 1.5  // Exposure: increased
 renderer.outputColorSpace = THREE.SRGBColorSpace
 
 app?.appendChild(renderer.domElement)

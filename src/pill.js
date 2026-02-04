@@ -12,7 +12,7 @@ function createTextTexture() {
   ctx.fillRect(0, 0, 512, 256)
   
   // Text styling - pharmaceutical style font (bold, condensed)
-  ctx.fillStyle = '#463A1E'  // Dark olive brown to match pill top
+  ctx.fillStyle = '#D7994D'  // Warm golden orange to match pill top
   ctx.font = 'bold 52px "Arial Narrow", Arial, sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
@@ -37,7 +37,7 @@ export function createPillMesh(radius = 0.15, height = 0.74, segments = 32) {
 
   // Materials - warm charcoal top, warm ivory bottom
   const topMaterial = new THREE.MeshStandardMaterial({
-    color: 0x463A1E,  // Dark olive brown
+    color: 0xD7994D,  // Warm golden orange
     roughness: 0.5,
     metalness: 0.0,
   })
